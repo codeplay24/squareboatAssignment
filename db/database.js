@@ -3,7 +3,7 @@ const  Sequelize  = require('sequelize');
 const dbname = process.env.DBNAME 
 const username = process.env.DBUSERNAME 
 const password = process.env.DBPASSWORD
-const host = process.env.DBHOST
+const host = process.env.DATABASE_URL
 
 
 const db = new Sequelize(dbname, username, password, {
