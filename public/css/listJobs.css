@@ -1,0 +1,33 @@
+.img-thumbnail{
+    width: 200px;
+    border-color: white;
+    display: inline-block;
+    margin-left: 100px;
+}
+
+.display-4{
+    display: inline-block;
+    margin-left: 100px;
+}
+
+.row{
+    margin-bottom: 40px;
+}
+
+.col{
+    margin: 10px;
+    text-align: center;
+}
+
+.nameClass{
+    width: 50px;
+}
+
+.buttonClass{
+    width: 50px;
+}
+
+#logoutLink{
+    padding-left: 200px;
+    width: 10px;
+}

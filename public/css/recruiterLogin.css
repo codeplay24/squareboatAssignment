@@ -1,0 +1,32 @@
+#postCol{
+    width: 400px;
+}
+
+textarea{
+    resize: none;
+}
+
+.img-thumbnail{
+    width: 200px;
+    border-color: white;
+    display: inline-block;
+    margin-left: 100px;
+}
+
+.display-4{
+    display: inline-block;
+    margin-left: 100px;
+}
+
+#logoutLink{
+    padding-left: 200px;
+    width: 10px;
+}
+
+p#jobs{
+    margin-bottom: 20px;
+    font-family: Arial;
+    text-align: center;
+    box-shadow: 2px 4px 5px 2px rgb(0 0 0 / 30%);
+}
+

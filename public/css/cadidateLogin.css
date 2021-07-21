@@ -1,0 +1,16 @@
+.display-4{
+    display: inline-block;
+    margin-left: 100px;
+}
+
+.img-thumbnail{
+    width: 200px;
+    border-color: white;
+    display: inline-block;
+    margin-left: 100px;
+}
+
+#logoutLink{
+    padding-left: 200px;
+    width: 10px;
+}

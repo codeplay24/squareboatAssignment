@@ -1,0 +1,20 @@
+.container{
+    margin-top: 50px;
+}
+
+.display-4{
+    display: inline-block;
+    margin-left: 100px;
+}
+
+.img-thumbnail{
+    width: 200px;
+    border-color: white;
+    display: inline-block;
+    margin-left: 100px;
+}
+
+#rahul_container{
+    width: 700px;
+}
+
