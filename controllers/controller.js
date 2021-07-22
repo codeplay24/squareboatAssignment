@@ -188,12 +188,30 @@ module.exports.register = async(req,res)=>{
             throw new Error()
         }
         if(role==='recruiter'){
+            const isThere = await recruiterModel.findOne({
+                 where:{
+                     email
+                 }
+            })
+            if(isThere){
+                errorText = 'A user already exists with the same email'
+                throw new Error()
+            }
             const recruiter = await recruiterModel.create({
                 name,
                 email,
                 password
             })
         }else{
+            const isThere = await candidateModel.findOne({
+                where:{
+                    email
+                }
+            })
+            if(isThere){
+                errorText = 'A user already exists with the same email'
+                throw new Error()
+            }
             const candidate = await candidateModel.create({
                 name,
                 email,
