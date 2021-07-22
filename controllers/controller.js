@@ -5,36 +5,66 @@ const jobs2candidateModel = require('../model/jobs2candidate')
 const jobsModel = require('../model/jobs')
 
 module.exports.home = (req,res)=>{
-    
-    if(res.locals.candidate){
-        res.redirect('/candidate_home')
-    }else if (res.locals.recruiter){
-        res.redirect('/recruiter_home')
+    try{
+        if(res.locals.candidate){
+            res.redirect('/candidate_home')
+        }else if (res.locals.recruiter){
+            res.redirect('/recruiter_home')
+        }
+        res.render('home')
+    }catch(e){
+        res.status(500).render('errorPage',{
+            errorCode: 404,
+            text: 'Some internal error. Come back again soon !'
+        })
     }
-    res.render('home')
 }
 
 module.exports.login_recruiter = async(req,res)=>{
-    const email = req.body.email
-    const password = req.body.password
-    const recruiter = await recruiterModel.findOne({
-        where:{
-            email
+    let statusCode = 200
+    let errorText = ''
+    try{
+        const email = req.body.email
+        const password = req.body.password
+        if(!email){
+            statusCode = 403
+            errorText = 'Email not provided'
+            throw new Error()
         }
-    })
-    if(!recruiter){
-        res.send('wrong username password')
-        return
+        if(!password){
+            statusCode = 403
+            errorText = 'Password for email not provided'
+            throw new Error()
+        }
+
+        const recruiter = await recruiterModel.findOne({
+            where:{
+                email
+            }
+        })
+
+        if(!recruiter){
+            errorText = 'Wrong and password provided'
+            statusCode = 403
+            throw new Error()
+        }
+
+        if(recruiter.password!=password){
+            errorText='wrong password entered'
+            statusCode = 403
+            throw new Error()
+        }
+        res.status(200).cookie('id_recruiter', recruiter.id, {
+            expires: new Date(new Date().getTime() + 3000 * 1000000),
+            sameSite:'strict',
+            httpOnly:true
+        }).redirect('/recruiter_home')
+    }catch(e){
+        res.status(statusCode).render('errorPage',{
+            errorCode: statusCode,
+            text: errorText
+        })
     }
-    if(recruiter.password!=password){
-        res.send('wrong password entered')
-        return
-    }
-    res.status(200).cookie('id_recruiter', recruiter.id, {
-        expires: new Date(new Date().getTime() + 3000 * 1000000),
-        sameSite:'strict',
-        httpOnly:true
-    }).redirect('/recruiter_home')
 }
 
 module.exports.recruiter_home = async(req,res)=>{
@@ -57,28 +87,50 @@ module.exports.recruiter_home = async(req,res)=>{
 }
 
 module.exports.login_candidate = async(req,res)=>{
-    const email = req.body.email
-    const password = req.body.password
-    const candidate = await candidateModel.findOne({
-        where:{
-            email
+    let statusCode = 200
+    let errorText = ''
+    try{
+        const email = req.body.email
+        const password = req.body.password
+
+        if(!email){
+            statusCode = 403
+            errorText = 'Email not provided'
+            throw new Error()
         }
-    })
-    if(!candidate){
-        res.send('wrong username password')
-        return
+        if(!password){
+            statusCode = 403
+            errorText = 'Password for email not provided'
+            throw new Error()
+        }
+
+        const candidate = await candidateModel.findOne({
+            where:{
+                email
+            }
+        })
+        if(!candidate){
+            statusCode = 403
+            errorText = 'No user found'
+            throw new Error()
+        }
+        if(candidate.password!=password){
+            statusCode = 403
+            errorText = 'Wrong password'
+            throw new Error()
+        }
+        
+        res.status(200).cookie('id_candidate', candidate.id, {
+            expires: new Date(new Date().getTime() + 3000 * 1000000),
+            sameSite:'strict',
+            httpOnly:true
+        }).redirect('/candidate_home')
+    }catch(e){
+        res.status(statusCode).render('errorPage',{
+            errorCode: statusCode,
+            text: errorText
+        })
     }
-    if(candidate.password!=password){
-        res.send('wrond password entered')
-        return
-    }
-    
-    res.status(200).cookie('id_candidate', candidate.id, {
-        expires: new Date(new Date().getTime() + 3000 * 1000000),
-        sameSite:'strict',
-        httpOnly:true
-    }).redirect('/candidate_home')
-    
 }
 
 module.exports.candidate_home = async (req,res)=>{
@@ -96,34 +148,68 @@ module.exports.candidate_home = async (req,res)=>{
 }
 
 module.exports.signup = (req,res)=>{
-    if(res.locals.candidate){
-        res.redirect('/candidate_home')
-    }else if (res.locals.recruiter){
-        res.redirect('/recruiter_home')
+    try{
+        if(res.locals.candidate){
+            res.redirect('/candidate_home')
+        }else if (res.locals.recruiter){
+            res.redirect('/recruiter_home')
+        }
+        
+        res.render('signup')
+    }catch(e){
+        res.status(500).render('errorPage',{
+            errorCode: 500,
+            text: 'Internal error. Check back later'
+        })
     }
-    
-    res.render('signup')
 }
 
 module.exports.register = async(req,res)=>{
-    const name = req.body.name;
-    const email = req.body.email
-    const password = req.body.password
-    const role = req.body.role
-    if(role==='recruiter'){
-        const recruiter = await recruiterModel.create({
-            name,
-            email,
-            password
-        })
-    }else{
-        const candidate = await candidateModel.create({
-            name,
-            email,
-            password
+    let errorText = ""
+    try{
+        const name = req.body.name;
+        const email = req.body.email
+        const password = req.body.password
+        const role = req.body.role
+        if(!name){
+            errorText = 'Name is missing'
+            throw new Error()
+        }
+        if(!email){
+            errorText = 'Email is missing'
+            throw new Error()
+        }
+        if(!password){
+            errorText = 'Password is missing'
+            throw new Error()
+        }
+        if(!role){
+            errorText = 'Role is missing'
+            throw new Error()
+        }
+        if(role==='recruiter'){
+            const recruiter = await recruiterModel.create({
+                name,
+                email,
+                password
+            })
+        }else{
+            const candidate = await candidateModel.create({
+                name,
+                email,
+                password
+            })
+        }
+        res.redirect('/')
+    }catch(e){
+        if(errorText===''){
+            errorText = e
+        }
+        res.status(403).render('errorPage',{
+            errorCode: 403,
+            text: errorText
         })
     }
-    res.redirect('/')
 }
 
 module.exports.savejob = async(req,res)=>{
@@ -146,35 +232,58 @@ module.exports.search = (req,res)=>{
 }
 
 module.exports.applyjob = async(req,res)=>{
-    const id = res.locals.candidate.id
-    const jobId = req.body.jobId
-    const jobsApplied = await jobs2candidateModel.findAll({
-        where:{
-            candidateId:id
-        }
-    })
-    let alreadyApplied = false
-    jobsApplied.forEach((job)=>{
-        if(job.jobId===parseInt(jobId)){
-            alreadyApplied = true
+    try{
+        const id = res.locals.candidate.id
+        const jobId = req.body.jobId
+        const jobsApplied = await jobs2candidateModel.findAll({
+            where:{
+                candidateId:id
+            }
+        })
+        let alreadyApplied = false
+        jobsApplied.forEach((job)=>{
+            if(job.jobId===parseInt(jobId)){
+                alreadyApplied = true
+                return
+            }
+        })
+        if(alreadyApplied){
+            res.status(403).send('already applied')
             return
         }
-    })
-    if(alreadyApplied){
-        res.send('already applied')
-        return
+        const newRow = await jobs2candidateModel.create({
+            candidateId:id,
+            jobId
+        })
+        res.status(200).send('successfully applied')
+    }catch(e){
+        res.status(404).render('errorPage',{
+            errorCode: 500,
+            text: 'Server Error'
+        })
     }
-    const newRow = await jobs2candidateModel.create({
-        candidateId:id,
-        jobId
-    })
-    res.send('saved')
 }
 
 module.exports.logout = (req,res)=>{
-    if(req.cookies.id_recruiter){
-        res.clearCookie('id_recruiter').status(200).redirect('/')
-    }else{
-        res.clearCookie('id_candidate').status(200).redirect('/')
+    try{
+        if(req.cookies.id_recruiter){
+            res.clearCookie('id_recruiter').status(200).redirect('/')
+        }else if((req.cookies.id_candidate)){
+            res.clearCookie('id_candidate').status(200).redirect('/')
+        }else{
+            throw new Error('No cookie found')
+        }
+    }catch(e){
+        res.status(404).render('errorPage',{
+            errorCode: 400,
+            text: 'Bad request'
+        })
     }
+}
+
+module.exports.default = (req,res)=>{
+    res.status(404).render('errorPage',{
+        errorCode: 404,
+        text: 'Can\'t found what you are looking for'
+    })
 }

@@ -14,6 +14,7 @@ const savejob = ()=>{
         if(xhr.status==200){
             jobtitleEle.value = ""
             jobDescEle.value = ""
+            alert('Job is posted')
         }
     }
 }

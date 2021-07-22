@@ -12,7 +12,7 @@ const db = new Sequelize(dbname, username, password, {
     dialectOptions: {
         ssl: {
           require: true,
-          rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+          rejectUnauthorized: false
         }
     }
 });

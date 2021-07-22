@@ -27,7 +27,7 @@
             <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
           <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <label for="exampleInputPassword1" class="form-label" >Password</label>
             <input type="password" name="password" class="form-control" id="exampleInputPassword1">
           </div>
           <div class="mb-3">
@@ -42,7 +42,7 @@
               <option value="recruiter">Recruiter</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary" onclick="validatePassword()">Submit</button>
         </form>
         <br>
         <p class="lead">
@@ -51,7 +51,17 @@
       </div>
       </div>
   </div>
-    
+    <script>
+      const password = document.getElementById('exampleInputPassword1')
+      const name = document.getElementById('exampleInputName1')
+      const validatePassword = ()=>{
+        if(password.value.length<6){
+          alert('password too short')
+        }
+      }
+      name.addEventListener('click', validatePassword)
+      
+    </script>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

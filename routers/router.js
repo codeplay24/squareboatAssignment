@@ -28,4 +28,6 @@ router.post('/applyjob',verifyCandidate, controller.applyjob)
 
 router.get('/logout', controller.logout)
 
+router.get('*', controller.default)
+
 module.exports = router

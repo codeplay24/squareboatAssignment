@@ -6,7 +6,7 @@ const applyClicked = (jobId)=>{
     xhr.send(jsonstr)
     xhr.onload = function(){
         if(xhr.status==200){
-            alert('successfully applied')
+            alert(xhr.response)
         }
     }
 }
@@ -18,7 +18,7 @@ const applyClicked2 = (jobId)=>{
     xhr.send(jsonstr)
     xhr.onload = function(){
         if(xhr.status==200){
-            alert('successfully applied')
+            alert(xhr.response)
         }
     }
 }
