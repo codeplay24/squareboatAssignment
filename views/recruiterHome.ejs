@@ -42,6 +42,7 @@
           <div class="col">
               <%jobsandcandidates.forEach((ele)=>{%>
                 <p id="jobs"><%=ele.candidate.name%> applied for <%=ele.job.title%> role</p>
+                <p>Email: <%=ele.candidate.email%></p>
               <%})%>
           </div>
         </div>
