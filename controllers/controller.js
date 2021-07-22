@@ -8,8 +8,10 @@ module.exports.home = (req,res)=>{
     try{
         if(res.locals.candidate){
             res.redirect('/candidate_home')
+            return
         }else if (res.locals.recruiter){
             res.redirect('/recruiter_home')
+            return
         }
         res.render('home')
     }catch(e){
